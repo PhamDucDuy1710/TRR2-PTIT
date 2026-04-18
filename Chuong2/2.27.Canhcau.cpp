@@ -1,70 +1,99 @@
 #include<bits/stdc++.h>
-using namespace std ;
-int a[105][105], b[105][105],  lt[10005], n ; 
-void DFS(int u) {
-	lt[u] = 1 ; 
-	for(int v = 1 ; v <= n ;v++) {
-		if(lt[v] == 0 && a[u][v] == 1) {
-			DFS(v) ; 
+using namespace std;
+
+#define ll long long
+#define fi first
+#define se second
+#define pb push_back
+#define FOR(i,a,b) for(int i=a;i<=b;i++)
+#define FORD(i,a,b) for(int i=a;i>=b;i--)
+
+int n, a[105][105], b[105][105], lt[10005]; 
+
+void dfs(int u) {
+	lt[u] = 1 ;
+	for(int v = 1 ;v <= n ; v++) {
+		if(!lt[v] && a[u][v] == 1) {
+			dfs(v) ; 
 		}
 	}
 }
-int tpltDfs() { 
-	int k = 0 ; 
-	for(int u = 1 ; u <= n ;u++) {
-		lt[u] = 0 ; 
+
+void bfs(int u) {
+	queue<int> q ; 
+	q.push(u) ; 
+	lt[u] = 1 ;
+	while(!q.empty()) {
+		int v = q.front() ; q.pop() ; 
+		for(int i = 1 ; i <= n ;i++) {
+			if(!lt[i] && a[v][i] == 1) {
+				q.push(i) ; 
+				lt[i] = 1;
+			}
+		}
 	}
-	for(int u = 1; u <= n ;u++) {
-		if(lt[u] == 0) {
+}
+
+int stplt() {
+	int k = 0 ;
+	for(int i = 1 ; i <= n ;i++) lt[i] = 0 ; 
+
+	for(int i = 1 ; i <= n ; i++) {
+		if(!lt[i]) {
 			k++ ; 
-			DFS(u) ; 
+			dfs(i) ; 
 		}
 	}
-	return k ; 
+	return k ;
 }
+
 void solve() {
 	cin >> n ; 
-	vector<pair<int,int>> edges, res ;  
-	for(int i = 1 ;i <= n ;i++) {
-		for(int j = 1; j <= n; j++) {
+	for(int i = 1 ; i <= n ;i++) {
+		for(int j = 1 ; j <= n ;j++) {
 			cin >> a[i][j] ; 
 			b[i][j] = a[i][j] ; 
 		}
 	}
-	for(int i = 1 ;i <= n ;i++) {
-		for(int j = 1; j <= n; j++) {
-			if(b[i][j] == 1) {
-				edges.push_back({i,j}) ; 
+
+	vector<pair<int,int>> res, cc; 
+	for(int i = 1 ; i <= n ;i++) {
+		for(int j = 1; j <= n ;j++) {
+			if(b[i][j]) {
+				res.pb({i,j}) ; 
 				b[j][i] = 0 ;
 			}
 		}
 	}
-	int k = tpltDfs() ; 
-	for(auto x : edges) {
+	int k = stplt() ; 
+	for(auto x : res) {
 		int u = x.first ; 
 		int v = x.second ; 
-		a[u][v] = 0 ; // Bỏ cạnh 
+		a[u][v] = 0 ; 
 		a[v][u] = 0 ; 
-		int I = tpltDfs() ; 
-		if(I > k) { // Ghi nhận là cạnh cầu 
-			res.push_back({u,v}) ; 
+		int I = stplt() ;
+		if(I > k) {
+			cc.pb({u,v}) ; 
 		}
-		a[u][v] = 1 ; // Trả lại để tiếp tục thử xóa cạnh khác
-		a[v][u] = 1 ; 
+		a[u][v] = 1 ;
+		a[v][u] = 1 ;
 	}
-	cout << res.size() << "\n" ; 
-	for(auto x : res ) {
-		cout << x.first << " " << x.second << "\n" ; 
+	cout << cc.size() << "\n" ; 
+	for(auto x : cc) {
+		cout << x.first << " " << x.second << "\n" ;
 	}
-} 
-int main() {
-	ios::sync_with_stdio(false) ; 
-	cin.tie(nullptr) ; 
-	freopen("TK.INP", "r", stdin);
-    freopen("TK.OUT", "w", stdout);
-	int t = 1 ; 
-	// cin >> t ;
-	while(t--) {
-		solve() ; 
-	}
+}
+
+
+int main(){
+    freopen("TK.INP","r",stdin);
+    freopen("TK.OUT","w",stdout);
+
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    solve() ;
+    
+
+    return 0;
 }
