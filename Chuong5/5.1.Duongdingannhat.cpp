@@ -1,62 +1,75 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-#define maxn 105
-typedef long long ll;
+#define ll long long
+#define fi first
+#define se second
+#define pb push_back
+#define FOR(i,a,b) for(int i=a;i<=b;i++)
+#define FORD(i,a,b) for(int i=a;i>=b;i--)
 
-int n, s, t;
-vector<int> dske[maxn];
-vector<int> parent(maxn, -1);
-int a[maxn][maxn] = {};
+typedef pair<int,int> ii ;
+typedef pair<int, pair<int,int>> iii ;
 
-void Dijkstra() {
-    queue<pair<int, int>> qe;
-    qe.push({s, 0});
-    vector<int> dp(maxn, INT_MAX);
-    dp[s] = 0;
-
-    while(!qe.empty()) {
-        auto [u, w] = qe.front(); qe.pop();
-
-        if(w > dp[u]) continue;
-
-        for(int v : dske[u]) {
-            if(dp[v] > dp[u] + a[u][v]) {
-                dp[v] = dp[u] + a[u][v];
-                parent[v] = u;
-                qe.push({v, dp[v]});
+int n, s, t ;
+vector<ii> ke[105] ;
+int a[105][105] ;
+vector<int> parent(105,-1) ;
+void nhap() {
+    cin >> n >> s >> t ;
+    for(int i = 1;i <= n ;i++) {
+        for(int j = 1; j <= n; j++) {
+            cin >> a[i][j] ;
+            if(a[i][j] != 0 && a[i][j] != 10000) {
+                ke[i].pb({j,a[i][j]}) ;
             }
         }
     }
-
-    if(dp[t] == INT_MAX) {
-        cout << 0 << endl;
-        return;
-    }
-    else cout << dp[t] << endl;
-    
-    vector<int> res;
-    do {
-        res.push_back(t);
-        t = parent[t];
-    } while(t != -1);
-    
-    reverse(res.begin(), res.end());
-    for(int x : res) cout << x << " ";
 }
 
-int main() {
-    freopen("DN.INP", "r", stdin);
-    freopen("DN.OUT", "w", stdout);
-    cin >> n >> s >> t;
-    for(int i = 1; i <= n; i++) {
-        for(int j = 1; j <= n; j++) {
-            cin >> a[i][j];
-            if(a[i][j] > 0 && a[i][j] <= 50) dske[i].push_back(j);
+void Dijkstra() {
+    vector<int> d(n+1,1e9) ;
+    d[s] = 0 ; 
+    priority_queue<ii, vector<ii>, greater<ii>> q ;
+    q.push({0,s}) ;
+    while(!q.empty()) {
+        ii p = q.top(); q.pop() ;
+        int u = p.second, dis = p.first ;
+        if(dis > d[u]) continue ;
+        d[u] = dis ;
+        for(ii it : ke[u]) {
+            int v = it.first, w = it.second ;
+            if(d[v] > d[u] + w) {
+                d[v] = d[u] + w;
+                parent[v] = u ;
+                q.push({d[v],v}) ;
+            }
         }
     }
+    if(d[t] == 1e9) cout << 0 << "\n" ; 
+    else {
+        cout << d[t] << "\n" ; 
+        vector<int> res ;
+        while(t != -1) {
+            res.pb(t) ; 
+            t = parent[t] ; 
+        }
+        reverse(res.begin(), res.end()); 
+        for(auto x : res) {
+            cout << x <<  " " ; 
+        }
+    }
+}
 
-    Dijkstra();
-    
+int main(){
+    freopen("DN.INP","r",stdin);
+    freopen("DN.OUT","w",stdout);
+
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    nhap() ;
+    Dijkstra() ;
+
     return 0;
 }

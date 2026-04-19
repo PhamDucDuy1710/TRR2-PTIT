@@ -8,66 +8,67 @@ using namespace std;
 #define FOR(i,a,b) for(int i=a;i<=b;i++)
 #define FORD(i,a,b) for(int i=a;i>=b;i--)
 
-int a[100][100], n;
-stack<int> st;
-vector<int> ce;
+int n, a[105][105] ;
+vector<int> ce ;
+stack<int> st ;
 
-bool lienThong() {
-	stack<int> dinh;
-	int vs[100];
-	memset(vs, 0, sizeof(vs));
-	dinh.push(1);
-	while (!dinh.empty()) {
-		int v = dinh.top();
-		vs[v] = 1;
-		dinh.pop();
-		for (int i = 1; i <= n; i++) {
-			if (a[v][i] && vs[i] == 0) {
-				dinh.push(v);
-				dinh.push(i);
-				break;
+bool lt() {
+	stack<int> dinh ;
+	int vs[100] ; 
+	memset(vs,false,sizeof(vs)) ;
+	dinh.push(1) ;
+	while(!dinh.empty()) {
+		int v = dinh.top() ; 
+		vs[v] = 1 ;
+		dinh.pop() ;
+		for(int i = 1 ; i <= n ;i++) {
+			if(a[v][i] == 1 && vs[i] == 0) {
+				dinh.push(v) ; 
+				dinh.push(i) ;
+				break ;
 			}
 		}
 	}
-	for (int i = 1; i <= n; i++) {
-		if (vs[i] == 0) return false;
+	for(int i = 1;i <= n ;i++) {
+		if(!vs[i]) return 0 ; 
 	}
-	return true;
+	return 1 ;
 }
 
-int checkEuler() {
-    if (!lienThong()) return 0;
-    int start = 0, end = 0;
-    for (int i = 1; i <= n; i++) {
-        int in = 0, out = 0;
-        for (int j = 1; j <= n; j++) {
-            if (a[i][j]) out++;
-            if (a[j][i]) in++;
-        }
-        if (out - in == 1) start++;
-        else if (in - out == 1) end++;
-        else if (in != out) return 0;
-    }
-    if (start == 0 && end == 0) return 1; // Euler
-    if (start == 1 && end == 1) return 2; // nửa Euler
-    return 0;
+int checkEU() {
+	if(!lt()) return 0 ;
+	int st = 0, en = 0 ;
+	for(int i = 1; i <= n ;i++) {
+		int in = 0, out = 0 ; 
+		for(int j = 1; j <= n ;j++) {
+			if(a[i][j]) out++ ; 
+			if(a[j][i]) in++ ;
+		}
+		if(out - in == 1) st++ ;
+		else if(in - out == 1) en++ ; 
+		else if(in != out) return 0 ;
+	}
+	if(st == 0 && en == 0) return 1 ;
+	if(st == 1 && en == 1) return 2 ;
+	return 0 ;
 }
+
 void eulerCycleCoHuong(int start) {
-	st.push(start);
-	while (!st.empty()) {
-		int u = st.top();
-		bool check = false;
-		for (int i = 1; i <= n; i++) {
-			if (a[u][i]) {
-				check = true;
-				st.push(i);
-				a[u][i] = 0; 
-				break;
+	st.push(start) ; 
+	while(!st.empty()) {
+		int u = st.top() ; 
+		bool check = false ; 
+		for(int i = 1 ;i <= n ; i++) {
+			if(a[u][i]) {
+				check = true ;
+				st.push(i) ; 
+				a[u][i] = 0 ; 
+				break ;
 			}
 		}
-		if (!check) {
-			st.pop();
-			ce.push_back(u);
+		if(!check) {
+			st.pop() ;
+			ce.pb(u) ;
 		}
 	}
 }
@@ -78,29 +79,31 @@ int main(){
 
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-
-    int t ; 
+    int t ;
     cin >> t ;
     if(t == 1) {
     	cin >> n ; 
-    	for(int i = 1; i <= n ; i++) {
-    		for(int j = 1 ; j <= n ;j++) {
+    	for(int i = 1 ; i <= n ; i++) {
+    		for(int j = 1 ;j <= n ;j++) {
     			cin >> a[i][j] ; 
     		}
     	}
-    	cout << checkEuler() << "\n" ; 
+    	cout << checkEU() << "\n" ; 
     }
     else {
     	int u ; 
     	cin >> n >> u ; 
-    	for(int i = 1 ;i <= n ; i++) {
-    		for(int j = 1; j <= n ;j++) {
-    			cin >> a[i][j] ; 
-    		}
+    	for(int i = 1; i <= n ;i++) {
+    		for(int j = 1; j <= n; j++) {
+    			cin >> a[i][j] ;
+    		} 
     	}
-    	eulerCycleCoHuong(u) ; 
-    	for(int i = ce.size() - 1 ; i >= 0 ;i--) {
-    		cout << ce[i] << " " ; 
+    	eulerCycleCoHuong(u) ;
+    	for(int i = ce.size() - 1 ;i >= 0 ;i--) {
+    		cout << ce[i] <<  " " ;  
     	}
     }
+    
+
+    return 0;
 }
