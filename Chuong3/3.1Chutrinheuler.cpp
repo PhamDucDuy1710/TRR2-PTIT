@@ -36,7 +36,7 @@ bool lt() {
 }
 
 int checklEU() {
-	if(!lt) return 0 ;
+	if(!lt()) return 0 ;
 
 	int odd = 0 ; 
 	for(int i = 1 ; i <= n ; i++) {

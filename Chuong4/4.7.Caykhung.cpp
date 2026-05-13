@@ -64,10 +64,7 @@ void Kruskal() {
 		if(MST.size() == n - 1) break ;
 	}
 	if(MST.size() == n - 1) {
-		cout << d << "\n" ;
-		for(auto z : MST) {
-			cout << z.x << " " << z.y << " " << z.w << "\n" ;
-		}
+		cout << d << "\n" ; 
 	}
 	else {
 		cout << 0 << "\n" ;
@@ -80,7 +77,11 @@ int main(){
 
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-    cin >> n >> m ; 
+    int t ;
+    cin >> t ;
+    while(t--) {
+    	dscanh.clear() ; 
+    	cin >> n >> m ; 
     for(int i = 0 ; i < m ;i++) {
     	int x, y, w ;
     	cin >> x >> y >> w ; 
@@ -88,6 +89,7 @@ int main(){
     }
     init() ; 
     Kruskal() ;
+    }
     
     return 0;
 }
