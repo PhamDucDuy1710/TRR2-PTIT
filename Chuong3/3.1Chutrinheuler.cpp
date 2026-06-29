@@ -1,108 +1,109 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define ll long long
+#define mp make_pair
 #define fi first
 #define se second
+#define ll long long
+#define FOR(i, a, b) for(int i = a; i <= b; i++)
+#define FORD(i, a, b) for(int i = a; i >= b; i--)
+#define F(i, a, b) for(int i = a; i < b; i++)
+#define FD(i, a, b) for(int i = a; i > b; i--)
+#define faster() ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define vi vector<int>
+#define vll vector<ll>
+#define all(x) (x).begin(), (x).end()
+#define endl '\n'
+#define file(name) freopen(name".INP","r",stdin); freopen(name".OUT","w",stdout);
 #define pb push_back
-#define FOR(i,a,b) for(int i=a;i<=b;i++)
-#define FORD(i,a,b) for(int i=a;i>=b;i--)
+typedef pair<int,int> ii; 
+typedef pair<int,pair<int,int>> iii;
 
-int a[105][105], n; 
-stack<int> st ;
-vector<int> ce ;
+int t, n, m, st, en, k, timer =0;
+int deg[105], dt[105], dc[105];
+int a[105][105], c[105][105];
+bool vs[105], AP[105];
+set<int> ke[105];
+int e[105], sz[105], low[105], disc[105];
+vector<ii> cc;
+
+void dfs(int u) {
+	vs[u] = 1;
+	k++;
+	for(int v = 1; v <= n; v++){
+		if(a[u][v] && !vs[v]) {
+			dfs(v);
+		}
+	}
+}
 
 bool lt() {
-	stack<int> dinh ; 
-	int vs[100] ;
-	memset(vs,0,sizeof(vs)) ;
-	dinh.push(1) ;
-	while(!dinh.empty()) {
-		int v = dinh.top() ;
-		vs[v] = 1 ;
-		dinh.pop() ;
-		for(int i = 1 ; i <= n  ;i++) {
-			if(a[v][i] && vs[i] == 0) {
-				dinh.push(v) ; 
-				dinh.push(i) ; 
-				break ; 
-			}
-		}
-	}
-	for(int i = 1 ;i <= n ;i++) {
-		if(vs[i] == 0) 	return false ; 
-	}
-	return true ;
+	memset(vs,false,sizeof(vs));
+	k = 0;
+	dfs(1);
+	return k == n;
 }
 
-int checklEU() {
-	if(!lt()) return 0 ;
-
-	int odd = 0 ; 
-	for(int i = 1 ; i <= n ; i++) {
-		int deg = 0 ;
-		for(int j = 1 ;j <= n ; j++) {
-			if(a[i][j]) deg++ ; 
+int kt() {
+	if(!lt()) return 0;
+	int odd = 0;
+	FOR(i,1,n) {
+		int deg = 0;
+		FOR(j,1,n) {
+			deg += a[i][j];
 		}
-		if(deg % 2) odd++ ; 
+		if(deg % 2 == 1) odd++;
 	}
-	if(odd == 0) return 1 ;
-	if(odd == 2) return 2 ;
-	return 0 ;
+	if(odd == 0) return 1;
+	else if(odd == 2) return 2;
+	else return 0;
 }
 
-void eulerCycleVoHuong(int start) {
-	st.push(start) ; 
+void euler(int u) {
+	stack<int> st;
+	vector<int> EC;
+	st.push(u);
 	while(!st.empty()) {
-		int u = st.top() ; 
-		bool check = false ; 
-		for(int i = 1 ; i <= n ;i++) {
-			if(a[u][i]) {
-				check = true ; 
-				st.push(i) ; 
-				a[u][i] = 0 ; a[i][u] = 0 ;
-				break ;
+		int x = st.top();
+		if(ke[x].size() != 0) {
+			int y = *ke[x].begin();
+			st.push(y);
+			ke[x].erase(y);
+			ke[y].erase(x);
+		}
+		else {
+			st.pop();
+			EC.pb(x);
+		}
+	}
+	reverse(EC.begin(),EC.end());
+	for(auto x : EC) cout << x << " ";
+}
+
+void solve() {
+	cin >> t >> n;
+	if(t == 1) {
+		FOR(i,1,n) {
+			FOR(j,1,n) {
+				cin >> a[i][j];
 			}
 		}
-		if(!check) {
-			st.pop() ; 
-			ce.pb(u) ;
+		cout << kt() << "\n";
+	}
+	else {
+		int u; cin >> u;
+		FOR(i,1,n) {
+			FOR(j,1,n) {
+				cin >> a[i][j];
+				if(a[i][j]) ke[i].insert(j);
+			}
 		}
+		euler(u);
 	}
 }
 
-int main(){
-    freopen("CT.INP","r",stdin);
-    freopen("CT.OUT","w",stdout);
-
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int t ;
-    cin >> t ;
-    if(t == 1) {
-    	cin >> n ;
-    	for(int i = 1; i <= n ; i++) {
-    		for(int j = 1 ; j <= n ; j++) {
-    			cin >> a[i][j] ; 
-    		}
-    	}
-    	cout << checklEU() << "\n" ; 
-    }
-    else {
-    	int u ; 
-    	cin >> n >> u ; 
-    	for(int i = 1; i<= n; i++) {
-    		for(int j = 1 ; j <= n ; j++) {
-    			cin >> a[i][j] ; 
-    		}
-    	}
-    	eulerCycleVoHuong(u) ; 
-    	for(int i = ce.size() - 1 ; i >= 0 ; i--) {
-    		cout << ce[i] << " " ; 
-    	}
-    	cout << "\n" ; 
-    }
-
+int main() {
+    file("CT");
+    solve();
     return 0;
 }

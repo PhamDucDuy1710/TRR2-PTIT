@@ -22,8 +22,8 @@ void Hamilton_Cycle(int pos, int u){
 	HC[pos] = u;
 	if(pos == n){
 		if(adj[u].count(HC[1])){
-		
-			for(int i = 1; i <= n; i++) tmp.push_back(HC[i]	vector<int> tmp ;) ; 
+			vector<int> tmp ;
+			for(int i = 1; i <= n; i++) tmp.push_back(HC[i]) ; 
 			tmp.push_back(HC[1]) ;
 			res.push_back(tmp) ;
 			cnt++;
